@@ -1,0 +1,109 @@
+Random random = new Random();
+
+List<IPlayer> players = new List<IPlayer>()
+{
+    new Player("Jugador 1", "Delantero", random.Next(0, 11)),
+    new Player("Jugador 2", "Delantero", random.Next(0, 11)),
+    new Player("Jugador 3", "Defensa", random.Next(0, 11)),
+    new Player("Jugador 4", "Defensa", random.Next(0, 11)),
+    new Player("Jugador 5", "Lateral", random.Next(0, 11)),
+    new Player("Jugador 6", "Lateral", random.Next(0, 11)),
+};
+
+IGame game = new Game();
+
+while (players.Count > 0)
+{
+    int index = random.Next(0, players.Count);
+
+    game.addPlayer(players[index]);
+
+    players.RemoveAt(index);
+}
+
+game.startGame();
+
+
+public interface IPlayer
+{
+    abstract int getPerformance();
+}
+
+public interface IGame
+{
+    abstract void addPlayer(IPlayer player);
+    abstract void startGame();
+}
+
+public class Player : IPlayer
+{
+
+    public Player(string name, string position, int performance)
+    {
+        this.name = name;
+        this.position = position;
+        this.performance = performance;
+    }
+
+    private string name { get; set; }
+    private string position { get; set; }
+    private int performance { get; set; }
+
+    public int getPerformance()
+    {
+        return performance;
+    }
+}
+
+
+public class Game : IGame
+{
+    public Game()
+    {
+        team1 = new List<IPlayer>();
+        team2 = new List<IPlayer>();
+    }
+    private List<IPlayer> team1 { get; set; }
+    private List<IPlayer> team2 { get; set; }
+    public void addPlayer(IPlayer player)
+    {
+        if (team1.Count == 3)
+        {
+            team2.Add(player);
+        }
+        else
+        {
+            team1.Add(player);
+        }
+    }
+
+    public void startGame()
+    {
+        int cont1 = 0;
+        int cont2 = 0;
+
+        foreach (IPlayer player in team1)
+        {
+            cont1 += player.getPerformance();
+        }
+
+        foreach (IPlayer player in team2)
+        {
+            cont2 += player.getPerformance();
+        }
+
+        if (cont1 > cont2)
+        {
+            Console.WriteLine($"El ganador es el equipo 1, con {cont1} puntos de rendimiento.");
+        }
+        else if (cont2 > cont1)
+        {
+            Console.WriteLine($"El ganador es el equipo 2, con {cont2} puntos de rendimiento.");
+        }
+        else
+        {
+            Console.WriteLine($"Los equipos quedaron empatados.");
+        }
+
+    }
+}
